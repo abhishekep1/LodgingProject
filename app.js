@@ -26,16 +26,6 @@ app.set("view enging","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
-const sessionOption={
-    secret:process.env.SECRET,
-    resave:false,
-    saveUninitialized:true,
-    cookie:{
-        expires:Date.now()+7*24*60*60*1000,
-        maxAge:+7*24*60*60*1000,
-        httpOnly:true,
-    },
-};
 const store=MongoStore.create({
     mongoUrl:dbUrl,
     crypto:{
@@ -49,6 +39,18 @@ store.on("error",()=>{
     console.log("ERROR in MONGO SESSION STORE",err);
 });
 
+
+const sessionOption={
+    store,
+    secret:process.env.SECRET,
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+        expires:Date.now()+7*24*60*60*1000,
+        maxAge:+7*24*60*60*1000,
+        httpOnly:true,
+    },
+};
 
 main().then(()=>{
     console.log("connected");
